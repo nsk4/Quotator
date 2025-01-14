@@ -35,37 +35,24 @@
 	};
 </script>
 
-<main>
-	<div class="quote-box">
-		<p class="quote">"{currentQuote}"</p>
-		<hr />
-		<p class="author">- {currentAuthor}</p>
-		<button class="share-button" onclick={() => shareQuote(currentQuote)}>Share</button>
-	</div>
+<div class="quote-box">
+	<p class="quote">"{currentQuote}"</p>
+	<hr />
+	<p class="author">- {currentAuthor}</p>
+	<button class="share-button" onclick={() => shareQuote(currentQuote)}>Share</button>
+</div>
 
-	<div class="controls">
-		<select class="category-select" bind:value={selectedCategory}>
-			{#each categories as category}
-				<option value={category}>{category}</option>
-			{/each}
-		</select>
-		<button class="new-quote-button" onclick={getRandomQuote}>Get Another Quote</button>
-	</div>
-</main>
+<div class="controls">
+	<select class="category-select" bind:value={selectedCategory}>
+		{#each categories as category}
+			<option value={category}>{category}</option>
+		{/each}
+	</select>
+	<button class="new-quote-button" onclick={getRandomQuote}>Get Another Quote</button>
+</div>
 
-<style>
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		width: 100vw;
-		padding: 20px;
-		box-sizing: border-box;
-		background-color: #121212;
-		color: #f5f5f5;
-	}
+<style lang="scss">
+	/* TODO: Move this to SCSS */
 
 	.quote-box {
 		text-align: center;
