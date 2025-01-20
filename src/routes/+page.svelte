@@ -1,6 +1,9 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import { onMount } from 'svelte';
+    import MaterialSymbolsStarOutline from 'virtual:icons/material-symbols/star-outline';
+    import MaterialSymbolsStar from 'virtual:icons/material-symbols/star';
+    import MaterialSymbolsShare from 'virtual:icons/material-symbols/share';
 
     let { data }: { data: PageData } = $props();
     let quotes = data.quotes;
@@ -9,16 +12,22 @@
     let currentQuote = $state('');
     let currentAuthor = $state('');
 
+    let isQuoteStarred = $state(false); // TODO: get this from session
+
     const getRandomQuote = (): void => {
         const categoryQuotes = quotes[selectedCategory];
         const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
         [currentQuote, currentAuthor] = categoryQuotes[randomIndex];
-        console.log(quotes, categories, selectedCategory, currentQuote, currentAuthor);
     };
 
     onMount(() => {
         getRandomQuote();
     });
+
+    const starQuote = (quote: string): void => {
+        // TODO: Store starred quote
+        isQuoteStarred = !isQuoteStarred;
+    };
 
     const shareQuote = (quote: string): void => {
         const shareData = {
@@ -39,10 +48,22 @@
     <p class="quote">"{currentQuote}"</p>
     <hr />
     <p class="author">- {currentAuthor}</p>
-    <button class="share-button" onclick={() => shareQuote(currentQuote)}>Share</button>
+
+    <p class="quote-controls">
+        <button class="star-button" onclick={() => starQuote(currentQuote)}>
+            {#if isQuoteStarred}
+                <MaterialSymbolsStar />
+            {:else}
+                <MaterialSymbolsStarOutline />
+            {/if}
+        </button>
+
+        <button class="share-button" onclick={() => shareQuote(currentQuote)}>
+            <MaterialSymbolsShare />
+        </button>
+    </p>
 </div>
 
-<!-- TODO: Add star to favourites button -->
 <div class="controls">
     <select class="category-select" bind:value={selectedCategory}>
         {#each categories as category}
@@ -73,26 +94,30 @@
             border: 0;
             border-top: 1px solid #444;
         }
+
         .author {
             font-size: 1rem;
             color: #a5a5a5;
             margin-top: 10px;
         }
 
-        .share-button {
+        .quote-controls {
             position: absolute;
             bottom: 10px;
             right: 10px;
-            font-size: 0.8rem;
-            padding: 5px 10px;
-            background: #333;
-            color: #f5f5f5;
-            border: 1px solid #444;
-            border-radius: 4px;
-            cursor: pointer;
+            margin: 0;
+            padding: 0;
 
-            &:hover {
-                background: #444;
+            button {
+                font-size: 1.5rem;
+                background: inherit;
+                color: #a5a5a5;
+                border: none;
+                cursor: pointer;
+
+                &:hover {
+                    color: #f5f5f5;
+                }
             }
         }
     }
