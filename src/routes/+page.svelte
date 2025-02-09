@@ -4,32 +4,55 @@
     import MaterialSymbolsStarOutline from 'virtual:icons/material-symbols/star-outline';
     import MaterialSymbolsStar from 'virtual:icons/material-symbols/star';
     import MaterialSymbolsShare from 'virtual:icons/material-symbols/share';
+    import type QuoteType from '$lib/types/QuoteType';
+    import { invalidateAll } from '$app/navigation';
 
     let { data }: { data: PageData } = $props();
-    let quotes = data.quotes;
-    let categories = Object.keys(quotes);
-    let selectedCategory = $state(categories[Math.floor(Math.random() * categories.length)]);
-    let currentQuote = $state('');
-    let currentAuthor = $state('');
+    let quotes: QuoteType[] = $derived(data.quotes);
+    let favourites: QuoteType[] = $derived(data.favourites);
+    $inspect('fav', favourites.length);
 
-    let isQuoteStarred = $state(false); // TODO: get this from session
+    let categories: string[] = $derived([
+        ...new Set(
+            quotes.map((quote) => {
+                return quote.category;
+            })
+        )
+    ]);
+    let selectedCategory = $state('');
+    let currentQuote: QuoteType | undefined = $state();
 
     const getRandomQuote = (): void => {
-        const categoryQuotes = quotes[selectedCategory];
-        const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
-        [currentQuote, currentAuthor] = categoryQuotes[randomIndex];
+        // TODO: search within set category
+        currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        selectedCategory = currentQuote.category;
     };
 
     onMount(() => {
         getRandomQuote();
     });
 
-    const starQuote = (quote: string): void => {
-        // TODO: Store starred quote
-        isQuoteStarred = !isQuoteStarred;
+    const isQuoteStarred = (): boolean => {
+        return favourites.find((favourite) => favourite.text === currentQuote?.text) !== undefined;
     };
 
-    const shareQuote = (quote: string): void => {
+    const starQuote = async (): Promise<void> => {
+        // TODO: remove from favourites if already on the list
+        const response = await fetch('/api/favourites', {
+            method: 'POST',
+            body: JSON.stringify(currentQuote)
+        });
+        const responseJSON = await response.json();
+        if (response.ok) {
+            invalidateAll();
+        } else {
+            // TODO: Display error message to the user
+            alert(responseJSON.message);
+        }
+    };
+
+    const shareQuote = (): void => {
+        /*
         const shareData = {
             title: 'Daily Quote',
             text: `Here is an inspiring quote for you: "${quote}"`,
@@ -41,24 +64,25 @@
         } else {
             alert('Sharing is not supported on your device.');
         }
+        */
     };
 </script>
 
 <div class="quote-box">
-    <p class="quote">"{currentQuote}"</p>
+    <p class="quote">"{currentQuote?.text}"</p>
     <hr />
-    <p class="author">- {currentAuthor}</p>
+    <p class="author">- {currentQuote?.author}</p>
 
     <p class="quote-controls">
-        <button class="star-button" onclick={() => starQuote(currentQuote)}>
-            {#if isQuoteStarred}
+        <button class="star-button" onclick={starQuote}>
+            {#if isQuoteStarred()}
                 <MaterialSymbolsStar />
             {:else}
                 <MaterialSymbolsStarOutline />
             {/if}
         </button>
 
-        <button class="share-button" onclick={() => shareQuote(currentQuote)}>
+        <button class="share-button" onclick={() => shareQuote()}>
             <MaterialSymbolsShare />
         </button>
     </p>

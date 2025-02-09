@@ -1,17 +1,49 @@
 {
-    "motivation": [
-      ["Believe in yourself and all that you are.", "Unknown"],
-      ["Your limitation—it's only your imagination.", "Unknown"],
-      ["Push yourself, because no one else is going to do it for you.", "Unknown"]
-    ],
-    "humor": [
-      ["I'm on a seafood diet. I see food and I eat it.", "Unknown"],
-      ["Why don’t scientists trust atoms? Because they make up everything!", "Unknown"],
-      ["I'm reading a book on anti-gravity. It's impossible to put down!", "Unknown"]
-    ],
-    "wisdom": [
-      ["The only true wisdom is in knowing you know nothing.", "Socrates"],
-      ["In the middle of difficulty lies opportunity.", "Albert Einstein"],
-      ["Life is not a problem to be solved, but a reality to be experienced.", "Soren Kierkegaard"]
+    "quotes": [
+        {
+            "text": "Believe in yourself and all that you are.",
+            "author": "Unknown",
+            "category": "motivation"
+        },
+        {
+            "text": "Your limitation—it's only your imagination.",
+            "author": "Unknown",
+            "category": "motivation"
+        },
+        {
+            "text": "Push yourself, because no one else is going to do it for you.",
+            "author": "Unknown",
+            "category": "motivation"
+        },
+        {
+            "text": "I'm on a seafood diet. I see food and I eat it.",
+            "author": "Unknown",
+            "category": "humor"
+        },
+        {
+            "text": "Why don’t scientists trust atoms? Because they make up everything!",
+            "author": "Unknown",
+            "category": "humor"
+        },
+        {
+            "text": "I'm reading a book on anti-gravity. It's impossible to put down!",
+            "author": "Unknown",
+            "category": "humor"
+        },
+        {
+            "text": "The only true wisdom is in knowing you know nothing.",
+            "author": "Socrates",
+            "category": "wisdom"
+        },
+        {
+            "text": "In the middle of difficulty lies opportunity.",
+            "author": "Albert Einstein",
+            "category": "wisdom"
+        },
+        {
+            "text": "Life is not a problem to be solved, but a reality to be experienced.",
+            "author": "Soren Kierkegaard",
+            "category": "wisdom"
+        }
     ]
-  }
+}
