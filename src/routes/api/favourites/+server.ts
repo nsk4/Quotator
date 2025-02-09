@@ -15,7 +15,22 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     favourites = [...favourites, quote];
     cookies.set('favourites', JSON.stringify(favourites), { path: '/' });
-    console.log('api post', favourites.length);
+
+    return json({ success: true });
+};
+
+export const DELETE: RequestHandler = async ({ request, cookies }) => {
+    const quote = await request.json();
+    if (!quote) {
+        throw error(400, 'Quote is required!');
+    }
+
+    const favouritesCookie = cookies.get('favourites');
+    if (favouritesCookie !== undefined) {
+        let favourites: QuoteType[] = JSON.parse(favouritesCookie);
+        favourites = favourites.filter((favourite) => favourite.text !== quote.text);
+        cookies.set('favourites', JSON.stringify(favourites), { path: '/' });
+    }
 
     return json({ success: true });
 };

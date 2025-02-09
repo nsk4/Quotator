@@ -17,6 +17,6 @@ export const load = (async ({ fetch, cookies }) => {
     if (favouritesCookie !== undefined) {
         favourites = JSON.parse(favouritesCookie) as QuoteType[];
     }
-    console.log('server load', favourites.length);
+
     return { quotes, favourites };
 }) satisfies PageServerLoad;

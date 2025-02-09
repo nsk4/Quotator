@@ -1,16 +1,13 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import { onMount } from 'svelte';
-    import MaterialSymbolsStarOutline from 'virtual:icons/material-symbols/star-outline';
-    import MaterialSymbolsStar from 'virtual:icons/material-symbols/star';
-    import MaterialSymbolsShare from 'virtual:icons/material-symbols/share';
     import type QuoteType from '$lib/types/QuoteType';
     import { invalidateAll } from '$app/navigation';
+    import QuoteBox from '$lib/components/QuoteBox.svelte';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);
     let favourites: QuoteType[] = $derived(data.favourites);
-    $inspect('fav', favourites.length);
 
     let categories: string[] = $derived([
         ...new Set(
@@ -20,7 +17,7 @@
         )
     ]);
     let selectedCategory = $state('');
-    let currentQuote: QuoteType | undefined = $state();
+    let currentQuote: QuoteType = $state({ text: '', author: '', category: '' });
 
     const getRandomQuote = (): void => {
         // TODO: search within set category
@@ -33,15 +30,25 @@
     });
 
     const isQuoteStarred = (): boolean => {
-        return favourites.find((favourite) => favourite.text === currentQuote?.text) !== undefined;
+        return favourites.find((favourite) => favourite.text === currentQuote.text) !== undefined;
     };
 
     const starQuote = async (): Promise<void> => {
-        // TODO: remove from favourites if already on the list
-        const response = await fetch('/api/favourites', {
-            method: 'POST',
-            body: JSON.stringify(currentQuote)
-        });
+        let response;
+        if (isQuoteStarred()) {
+            // Create delete request to delete a starred quote
+            response = await fetch('/api/favourites', {
+                method: 'DELETE',
+                body: JSON.stringify(currentQuote)
+            });
+        } else {
+            // Create post request to add starred quote
+            response = await fetch('/api/favourites', {
+                method: 'POST',
+                body: JSON.stringify(currentQuote)
+            });
+        }
+
         const responseJSON = await response.json();
         if (response.ok) {
             invalidateAll();
@@ -68,25 +75,7 @@
     };
 </script>
 
-<div class="quote-box">
-    <p class="quote">"{currentQuote?.text}"</p>
-    <hr />
-    <p class="author">- {currentQuote?.author}</p>
-
-    <p class="quote-controls">
-        <button class="star-button" onclick={starQuote}>
-            {#if isQuoteStarred()}
-                <MaterialSymbolsStar />
-            {:else}
-                <MaterialSymbolsStarOutline />
-            {/if}
-        </button>
-
-        <button class="share-button" onclick={() => shareQuote()}>
-            <MaterialSymbolsShare />
-        </button>
-    </p>
-</div>
+<QuoteBox quote={currentQuote} isStarred={isQuoteStarred()} {starQuote} {shareQuote} />
 
 <div class="controls">
     <select class="category-select" bind:value={selectedCategory}>
@@ -98,54 +87,6 @@
 </div>
 
 <style lang="scss">
-    .quote-box {
-        text-align: center;
-        padding: 20px;
-        border: 1px solid #444;
-        border-radius: 10px;
-        background: #1e1e1e;
-        position: relative;
-        color: #f5f5f5;
-
-        .quote {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        hr {
-            margin: 10px 0;
-            border: 0;
-            border-top: 1px solid #444;
-        }
-
-        .author {
-            font-size: 1rem;
-            color: #a5a5a5;
-            margin-top: 10px;
-        }
-
-        .quote-controls {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            margin: 0;
-            padding: 0;
-
-            button {
-                font-size: 1.5rem;
-                background: inherit;
-                color: #a5a5a5;
-                border: none;
-                cursor: pointer;
-
-                &:hover {
-                    color: #f5f5f5;
-                }
-            }
-        }
-    }
-
     .controls {
         display: flex;
         gap: 10px;
