@@ -4,17 +4,11 @@
     import MaterialSymbolsShare from 'virtual:icons/material-symbols/share';
     import type QuoteType from '$lib/types/QuoteType';
 
-    let {
-        quote,
-        isStarred,
-        starQuote,
-        shareQuote
-    }: {
-        quote: QuoteType;
-        isStarred: boolean;
-        starQuote: () => void;
-        shareQuote: () => void;
-    } = $props();
+    let props = $props();
+    let quote: QuoteType = $derived(props.quote);
+    let isStarred: boolean = $derived(props.isStarred);
+    let starQuote: () => void = $derived(props.starQuote);
+    let shareQuote: () => void = $derived(props.shareQuote);
 </script>
 
 <div class="quote-box">
@@ -23,17 +17,21 @@
     <p class="author">- {quote.author}</p>
 
     <p class="quote-controls">
-        <button class="star-button" onclick={() => starQuote()}>
-            {#if isStarred}
-                <MaterialSymbolsStar />
-            {:else}
-                <MaterialSymbolsStarOutline />
-            {/if}
-        </button>
+        {#if starQuote != undefined}
+            <button class="star-button" onclick={starQuote}>
+                {#if isStarred}
+                    <MaterialSymbolsStar />
+                {:else}
+                    <MaterialSymbolsStarOutline />
+                {/if}
+            </button>
+        {/if}
 
-        <button class="share-button" onclick={() => shareQuote()}>
-            <MaterialSymbolsShare />
-        </button>
+        {#if shareQuote != undefined}
+            <button class="share-button" onclick={shareQuote}>
+                <MaterialSymbolsShare />
+            </button>
+        {/if}
     </p>
 </div>
 
