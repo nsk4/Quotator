@@ -1,46 +1,55 @@
 {
     "quotes": [
         {
+            "id": 1,
             "text": "Believe in yourself and all that you are.",
             "author": "Unknown",
             "category": "motivation"
         },
         {
+            "id": 2,
             "text": "Your limitation—it's only your imagination.",
             "author": "Unknown",
             "category": "motivation"
         },
         {
+            "id": 3,
             "text": "Push yourself, because no one else is going to do it for you.",
             "author": "Unknown",
             "category": "motivation"
         },
         {
+            "id": 4,
             "text": "I'm on a seafood diet. I see food and I eat it.",
             "author": "Unknown",
             "category": "humor"
         },
         {
+            "id": 5,
             "text": "Why don’t scientists trust atoms? Because they make up everything!",
             "author": "Unknown",
             "category": "humor"
         },
         {
+            "id": 6,
             "text": "I'm reading a book on anti-gravity. It's impossible to put down!",
             "author": "Unknown",
             "category": "humor"
         },
         {
+            "id": 7,
             "text": "The only true wisdom is in knowing you know nothing.",
             "author": "Socrates",
             "category": "wisdom"
         },
         {
+            "id": 8,
             "text": "In the middle of difficulty lies opportunity.",
             "author": "Albert Einstein",
             "category": "wisdom"
         },
         {
+            "id": 9,
             "text": "Life is not a problem to be solved, but a reality to be experienced.",
             "author": "Soren Kierkegaard",
             "category": "wisdom"

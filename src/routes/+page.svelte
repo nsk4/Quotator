@@ -4,10 +4,11 @@
     import type QuoteType from '$lib/types/QuoteType';
     import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
+    import { page } from '$app/state';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);
-    let favourites: QuoteType[] = $derived(data.favourites);
+    let favourites: number[] = $derived(data.favourites);
 
     let categories: string[] = $derived([
         ...new Set(
@@ -16,8 +17,11 @@
             })
         )
     ]);
+
     let selectedCategory = $state('');
-    let currentQuote: QuoteType = $state({ text: '', author: '', category: '' });
+    let currentQuote: QuoteType = $state({ id: NaN, text: '', author: '', category: '' });
+
+    //let currentQuote: QuoteType = data?.selectedQuote;
 
     const getRandomQuote = (): void => {
         // TODO: search within set category
@@ -26,26 +30,36 @@
     };
 
     onMount(() => {
-        getRandomQuote();
-    });
+        const quoteParam = page.url.searchParams.get('id');
+        if (!quoteParam) {
+            // Quote was not passed as parameter
+            getRandomQuote();
+        }
 
-    const isQuoteStarred = (): boolean => {
-        return favourites.find((favourite) => favourite.text === currentQuote.text) !== undefined;
-    };
+        const quoteid = Number(quoteParam);
+        const foundQuote = quotes.find((quote) => quote.id === quoteid);
+        if (foundQuote !== undefined) {
+            currentQuote = foundQuote;
+            selectedCategory = currentQuote.category;
+        } else {
+            // Invalid parameter, get random quote
+            getRandomQuote();
+        }
+    });
 
     const starQuote = async (): Promise<void> => {
         let response;
-        if (isQuoteStarred()) {
+        if (favourites.includes(currentQuote.id)) {
             // Create delete request to delete a starred quote
             response = await fetch('/api/favourites', {
                 method: 'DELETE',
-                body: JSON.stringify(currentQuote)
+                body: JSON.stringify(currentQuote.id)
             });
         } else {
             // Create post request to add starred quote
             response = await fetch('/api/favourites', {
                 method: 'POST',
-                body: JSON.stringify(currentQuote)
+                body: JSON.stringify(currentQuote.id)
             });
         }
 
@@ -75,7 +89,12 @@
     };
 </script>
 
-<QuoteBox quote={currentQuote} isStarred={isQuoteStarred()} {starQuote} {shareQuote} />
+<QuoteBox
+    quote={currentQuote}
+    isStarred={favourites.includes(currentQuote.id)}
+    {starQuote}
+    {shareQuote}
+/>
 
 <div class="controls">
     <select class="category-select" bind:value={selectedCategory}>

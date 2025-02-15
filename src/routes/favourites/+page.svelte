@@ -5,13 +5,13 @@
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
-    let favourites: QuoteType[] = $derived(data.favourites);
+    let favouriteQuotes: QuoteType[] = $derived(data.favouriteQuotes);
 
-    const unstarQuote = async (quote: QuoteType): Promise<void> => {
+    const unstarQuote = async (quoteId: number): Promise<void> => {
         let response;
         response = await fetch('/api/favourites', {
             method: 'DELETE',
-            body: JSON.stringify(quote)
+            body: JSON.stringify(quoteId)
         });
 
         const responseJSON = await response.json();
@@ -25,8 +25,14 @@
 </script>
 
 <div>
-    {#each favourites as quote}
-        <QuoteBox {quote} isStarred={true} starQuote={() => unstarQuote(quote)} />
+    {#each favouriteQuotes as favouriteQuote}
+        <QuoteBox
+            quote={favouriteQuote}
+            isStarred={true}
+            starQuote={() => unstarQuote(favouriteQuote.id)}
+        />
+    {:else}
+        <p>No favourite quotes yet.</p>
     {/each}
 </div>
 
@@ -36,5 +42,10 @@
         flex-direction: column;
         justify-content: flex-start;
         gap: 20px;
+
+        p {
+            font-size: 1rem;
+            color: #f5f5f5;
+        }
     }
 </style>

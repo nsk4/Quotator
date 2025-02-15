@@ -13,9 +13,9 @@ export const load = (async ({ fetch, cookies }) => {
     const jsonRes = await results.json();
     const quotes = jsonRes['quotes'] as QuoteType[];
     const favouritesCookie = cookies.get('favourites');
-    let favourites = [] as QuoteType[];
+    let favourites: number[] = [];
     if (favouritesCookie !== undefined) {
-        favourites = JSON.parse(favouritesCookie) as QuoteType[];
+        favourites = JSON.parse(favouritesCookie) as number[];
     }
 
     return { quotes, favourites };
