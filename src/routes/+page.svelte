@@ -18,8 +18,8 @@
         )
     ]);
 
-    let selectedCategory = $state('');
-    let currentQuote: QuoteType = $state({ id: NaN, text: '', author: '', category: '' });
+    let selectedCategory: string | undefined = $state();
+    let currentQuote: QuoteType | undefined = $state();
 
     const getRandomQuote = (): void => {
         if (!selectedCategory) {
@@ -52,19 +52,19 @@
         }
     });
 
-    const starQuote = async (): Promise<void> => {
+    const starQuote = async (quoteId: number): Promise<void> => {
         let response;
-        if (favourites.includes(currentQuote.id)) {
+        if (favourites.includes(quoteId)) {
             // Create delete request to delete a starred quote
             response = await fetch('/api/favourites', {
                 method: 'DELETE',
-                body: JSON.stringify(currentQuote.id)
+                body: JSON.stringify(quoteId)
             });
         } else {
             // Create post request to add starred quote
             response = await fetch('/api/favourites', {
                 method: 'POST',
-                body: JSON.stringify(currentQuote.id)
+                body: JSON.stringify(quoteId)
             });
         }
 
@@ -94,23 +94,51 @@
     };
 </script>
 
-<QuoteBox
-    quote={currentQuote}
-    isStarred={favourites.includes(currentQuote.id)}
-    {starQuote}
-    {shareQuote}
-/>
-
-<div class="controls">
-    <select class="category-select" bind:value={selectedCategory}>
-        {#each categories as category}
-            <option value={category}>{category}</option>
-        {/each}
-    </select>
-    <button class="new-quote-button" onclick={getRandomQuote}>Get Another Quote</button>
-</div>
+{#if currentQuote}
+    <QuoteBox
+        quote={currentQuote}
+        isStarred={favourites.includes(currentQuote.id)}
+        starQuote={() => currentQuote && starQuote(currentQuote.id)}
+        {shareQuote}
+    />
+    <div class="controls">
+        <select class="category-select" bind:value={selectedCategory}>
+            {#each categories as category}
+                <option value={category}>{category}</option>
+            {/each}
+        </select>
+        <button class="new-quote-button" onclick={getRandomQuote}>Get Another Quote</button>
+    </div>
+{:else}
+    <div class="loading-container">
+        <div class="loading-icon"></div>
+    </div>
+{/if}
 
 <style lang="scss">
+    .loading-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .loading-icon {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #444;
+            border-top-color: #f5f5f5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+
     .controls {
         display: flex;
         gap: 10px;
