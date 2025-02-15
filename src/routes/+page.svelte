@@ -21,12 +21,17 @@
     let selectedCategory = $state('');
     let currentQuote: QuoteType = $state({ id: NaN, text: '', author: '', category: '' });
 
-    //let currentQuote: QuoteType = data?.selectedQuote;
-
     const getRandomQuote = (): void => {
-        // TODO: search within set category
-        currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        selectedCategory = currentQuote.category;
+        if (!selectedCategory) {
+            // Category not selected, for example during first page load
+            currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            selectedCategory = currentQuote.category;
+        } else {
+            // Category selected, get random quote from that category
+            const categoryQuotes = quotes.filter((quote) => quote.category === selectedCategory);
+            currentQuote = categoryQuotes[Math.floor(Math.random() * categoryQuotes.length)];
+            selectedCategory = currentQuote.category;
+        }
     };
 
     onMount(() => {
@@ -91,7 +96,7 @@
 
 <QuoteBox
     quote={currentQuote}
-    isStarred={favourites.includes(currentQuote.id)}
+    isStarred={() => favourites.includes(currentQuote.id)}
     {starQuote}
     {shareQuote}
 />
