@@ -96,7 +96,7 @@
 
 <QuoteBox
     quote={currentQuote}
-    isStarred={() => favourites.includes(currentQuote.id)}
+    isStarred={favourites.includes(currentQuote.id)}
     {starQuote}
     {shareQuote}
 />
