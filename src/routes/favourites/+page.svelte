@@ -2,7 +2,8 @@
     import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
     import type QuoteType from '$lib/types/QuoteType';
-    import { fly } from 'svelte/transition';
+    import { flip } from 'svelte/animate';
+    import { blur, slide } from 'svelte/transition';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
@@ -26,8 +27,8 @@
 </script>
 
 <div class="content">
-    {#each favouriteQuotes as favouriteQuote}
-        <div class="quote-box" transition:fly>
+    {#each favouriteQuotes as favouriteQuote (favouriteQuote.id)}
+        <div class="quote-box" transition:slide animate:flip>
             <QuoteBox
                 quote={favouriteQuote}
                 isStarred={true}
@@ -35,7 +36,7 @@
             />
         </div>
     {:else}
-        <div class="no-results-text">No favourite quotes yet.</div>
+        <div class="no-results-text" transition:blur={{ delay: 500 }}>No favourite quotes yet.</div>
     {/each}
 </div>
 

@@ -5,6 +5,7 @@
     import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
     import { page } from '$app/state';
+    import { slide } from 'svelte/transition';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);
@@ -95,12 +96,17 @@
 </script>
 
 {#if currentQuote}
-    <QuoteBox
-        quote={currentQuote}
-        isStarred={favourites.includes(currentQuote.id)}
-        starQuote={() => currentQuote && starQuote(currentQuote.id)}
-        {shareQuote}
-    />
+    {#key currentQuote}
+        <div transition:slide>
+            <QuoteBox
+                quote={currentQuote}
+                isStarred={favourites.includes(currentQuote.id)}
+                starQuote={() => currentQuote && starQuote(currentQuote.id)}
+                {shareQuote}
+            />
+        </div>
+    {/key}
+
     <div class="controls">
         <select class="category-select" bind:value={selectedCategory}>
             {#each categories as category}
