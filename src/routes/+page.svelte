@@ -77,22 +77,6 @@
             alert(responseJSON.message);
         }
     };
-
-    const shareQuote = (): void => {
-        /*
-        const shareData = {
-            title: 'Daily Quote',
-            text: `Here is an inspiring quote for you: "${quote}"`,
-            url: window.location.href
-        };
-
-        if (navigator.share) {
-            navigator.share(shareData).catch(console.error);
-        } else {
-            alert('Sharing is not supported on your device.');
-        }
-        */
-    };
 </script>
 
 {#if currentQuote}
@@ -102,7 +86,6 @@
                 quote={currentQuote}
                 isStarred={favourites.includes(currentQuote.id)}
                 starQuote={() => currentQuote && starQuote(currentQuote.id)}
-                {shareQuote}
             />
         </div>
     {/key}

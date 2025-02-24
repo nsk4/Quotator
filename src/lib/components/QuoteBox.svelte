@@ -8,7 +8,20 @@
     let quote: QuoteType = $derived(props.quote);
     let isStarred: boolean = $derived(props.isStarred);
     let starQuote: () => void = $derived(props.starQuote);
-    let shareQuote: () => void = $derived(props.shareQuote);
+
+    const shareQuote: () => void = () => {
+        const shareData = {
+            title: 'Quotator Quote',
+            text: `Here is an inspiring quote by ${quote.author} for you: "${quote.text}"`,
+            url: '?id=' + quote.id
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(console.error);
+        } else {
+            alert('Sharing is not supported on your device.');
+        }
+    };
 </script>
 
 <div class="quote-box">
@@ -27,11 +40,9 @@
             </button>
         {/if}
 
-        {#if shareQuote != undefined}
-            <button class="share-button" onclick={shareQuote}>
-                <MaterialSymbolsShare />
-            </button>
-        {/if}
+        <button class="share-button" onclick={shareQuote}>
+            <MaterialSymbolsShare />
+        </button>
     </p>
 </div>
 
