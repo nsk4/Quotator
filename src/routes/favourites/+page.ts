@@ -12,8 +12,16 @@ export const load: PageLoad = async ({ fetch }) => {
             message: results.statusText
         });
     }
-    const jsonRes = await results.json();
-    const quotes = jsonRes['quotes'] as QuoteType[];
 
+    let jsonRes;
+    try {
+        jsonRes = await results.json();
+    } catch (e) {
+        error(404, {
+            message: 'Error while fetch or parsing quotes.'
+        });
+    }
+
+    const quotes = jsonRes['quotes'] as QuoteType[];
     return { quotes };
 };

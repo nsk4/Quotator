@@ -40,6 +40,7 @@
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
+        color: #f5f5f5;
     }
 
     .container {
