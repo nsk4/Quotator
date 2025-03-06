@@ -49,7 +49,12 @@
 
         const responseJSON = await response.json();
         if (response.ok) {
-            invalidateAll();
+            // Store and restore quote since invalidateAll() will reacquire quotes from backend and thus reset it.
+            const oldCurrentQuote = currentQuote;
+            const oldSelectedCategory = selectedCategory;
+            await invalidateAll();
+            currentQuote = oldCurrentQuote;
+            selectedCategory = oldSelectedCategory;
         } else {
             // TODO: Display error message to the user
             alert(responseJSON.message);

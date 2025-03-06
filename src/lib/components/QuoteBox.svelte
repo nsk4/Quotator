@@ -13,7 +13,7 @@
         const shareData = {
             title: 'Quotator Quote',
             text: `Here is an inspiring quote by ${quote.author} for you: "${quote.text}"`,
-            url: '?id=' + quote.id
+            url: '/' + quote.id
         };
 
         if (navigator.share) {
