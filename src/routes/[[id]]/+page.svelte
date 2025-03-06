@@ -1,13 +1,12 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import type QuoteType from '$lib/types/QuoteType';
-    import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
     import { slide } from 'svelte/transition';
+    import { favouritesStore } from '$lib/stores/favourites';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);
-    let favourites: number[] = $derived(data.favourites);
 
     let categories: string[] = $derived([
         ...new Set(
@@ -32,32 +31,12 @@
     };
 
     const starQuote = async (quoteId: number): Promise<void> => {
-        let response;
-        if (favourites.includes(quoteId)) {
-            // Create delete request to delete a starred quote
-            response = await fetch('/api/favourites', {
-                method: 'DELETE',
-                body: JSON.stringify(quoteId)
-            });
+        if ($favouritesStore.includes(quoteId)) {
+            // Unstar quote
+            $favouritesStore = $favouritesStore.filter((favourite) => favourite !== quoteId);
         } else {
-            // Create post request to add starred quote
-            response = await fetch('/api/favourites', {
-                method: 'POST',
-                body: JSON.stringify(quoteId)
-            });
-        }
-
-        const responseJSON = await response.json();
-        if (response.ok) {
-            // Store and restore quote since invalidateAll() will reacquire quotes from backend and thus reset it.
-            const oldCurrentQuote = currentQuote;
-            const oldSelectedCategory = selectedCategory;
-            await invalidateAll();
-            currentQuote = oldCurrentQuote;
-            selectedCategory = oldSelectedCategory;
-        } else {
-            // TODO: Display error message to the user
-            alert(responseJSON.message);
+            // Star quote
+            $favouritesStore = [...$favouritesStore, quoteId];
         }
     };
 </script>
@@ -67,7 +46,7 @@
         <div transition:slide>
             <QuoteBox
                 quote={currentQuote}
-                isStarred={favourites.includes(currentQuote.id)}
+                isStarred={$favouritesStore.includes(currentQuote.id)}
                 starQuote={() => currentQuote && starQuote(currentQuote.id)}
             />
         </div>

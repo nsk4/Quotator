@@ -1,22 +1,19 @@
 import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import type QuoteType from '$lib/types/QuoteType';
 
-export const load = (async ({ fetch, cookies, params }) => {
+export const prerender = true;
+export const ssr = false;
+
+export const load: PageLoad = async ({ fetch, params }) => {
     const results = await fetch('/quotes.json');
     if (!results.ok) {
         error(results.status, {
             message: results.statusText
         });
     }
-
     const jsonRes = await results.json();
     const quotes = jsonRes['quotes'] as QuoteType[];
-    const favouritesCookie = cookies.get('favourites');
-    let favourites: number[] = [];
-    if (favouritesCookie !== undefined) {
-        favourites = JSON.parse(favouritesCookie) as number[];
-    }
 
     // Check if quote was shared via link.
     let sharedQuote: QuoteType | undefined = undefined;
@@ -33,5 +30,5 @@ export const load = (async ({ fetch, cookies, params }) => {
         initialQuote = sharedQuote;
     }
 
-    return { quotes, favourites, initialQuote };
-}) satisfies PageServerLoad;
+    return { quotes, initialQuote };
+};

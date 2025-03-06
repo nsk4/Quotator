@@ -1,28 +1,17 @@
 <script lang="ts">
-    import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
     import type QuoteType from '$lib/types/QuoteType';
     import { flip } from 'svelte/animate';
     import { blur, slide } from 'svelte/transition';
     import type { PageData } from './$types';
+    import { favouritesStore } from '$lib/stores/favourites';
 
     let { data }: { data: PageData } = $props();
-    let favouriteQuotes: QuoteType[] = $derived(data.favouriteQuotes);
+    let quotes: QuoteType[] = $derived(data.quotes);
+    let favouriteQuotes = $derived(quotes.filter((quote) => $favouritesStore.includes(quote.id)));
 
     const unstarQuote = async (quoteId: number): Promise<void> => {
-        let response;
-        response = await fetch('/api/favourites', {
-            method: 'DELETE',
-            body: JSON.stringify(quoteId)
-        });
-
-        const responseJSON = await response.json();
-        if (response.ok) {
-            invalidateAll();
-        } else {
-            // TODO: Display error message to the user
-            alert(responseJSON.message);
-        }
+        $favouritesStore = $favouritesStore.filter((favourite) => favourite !== quoteId);
     };
 </script>
 
