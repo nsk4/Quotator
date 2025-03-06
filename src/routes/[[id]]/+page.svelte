@@ -1,10 +1,8 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    import { onMount } from 'svelte';
     import type QuoteType from '$lib/types/QuoteType';
     import { invalidateAll } from '$app/navigation';
     import QuoteBox from '$lib/components/QuoteBox.svelte';
-    import { page } from '$app/state';
     import { slide } from 'svelte/transition';
 
     let { data }: { data: PageData } = $props();
@@ -19,39 +17,19 @@
         )
     ]);
 
-    let selectedCategory: string | undefined = $state();
     let currentQuote: QuoteType | undefined = $state();
-
-    const getRandomQuote = (): void => {
-        if (!selectedCategory) {
-            // Category not selected, for example during first page load
-            currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            selectedCategory = currentQuote.category;
-        } else {
-            // Category selected, get random quote from that category
-            const categoryQuotes = quotes.filter((quote) => quote.category === selectedCategory);
-            currentQuote = categoryQuotes[Math.floor(Math.random() * categoryQuotes.length)];
-            selectedCategory = currentQuote.category;
-        }
-    };
-
-    onMount(() => {
-        const quoteParam = page.url.searchParams.get('id');
-        if (!quoteParam) {
-            // Quote was not passed as parameter
-            getRandomQuote();
-        }
-
-        const quoteid = Number(quoteParam);
-        const foundQuote = quotes.find((quote) => quote.id === quoteid);
-        if (foundQuote !== undefined) {
-            currentQuote = foundQuote;
-            selectedCategory = currentQuote.category;
-        } else {
-            // Invalid parameter, get random quote
-            getRandomQuote();
+    let selectedCategory: string = $state('');
+    $effect(() => {
+        if (data?.initialQuote) {
+            currentQuote = data.initialQuote;
+            selectedCategory = data.initialQuote.category;
         }
     });
+
+    const getRandomQuote = (): void => {
+        const categoryQuotes = quotes.filter((quote) => quote.category === selectedCategory);
+        currentQuote = categoryQuotes[Math.floor(Math.random() * categoryQuotes.length)];
+    };
 
     const starQuote = async (quoteId: number): Promise<void> => {
         let response;
@@ -89,11 +67,11 @@
             />
         </div>
     {/key}
-
     <div class="controls">
         <select class="category-select" bind:value={selectedCategory}>
             {#each categories as category}
-                <option value={category}>{category}</option>
+                <option value={category} selected={category === selectedCategory}>{category}</option
+                >
             {/each}
         </select>
         <button class="new-quote-button" onclick={getRandomQuote}>Get Another Quote</button>
