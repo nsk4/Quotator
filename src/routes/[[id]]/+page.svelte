@@ -10,9 +10,11 @@
 
     let categories: string[] = $derived([
         ...new Set(
-            quotes.map((quote) => {
-                return quote.category;
-            })
+            quotes
+                .map((quote) => {
+                    return quote.categories;
+                })
+                .flat()
         )
     ]);
 
@@ -21,12 +23,14 @@
     $effect(() => {
         if (data?.initialQuote) {
             currentQuote = data.initialQuote;
-            selectedCategory = data.initialQuote.category;
+            selectedCategory = data.initialQuote.categories[0];
         }
     });
 
     const getRandomQuote = (): void => {
-        const categoryQuotes = quotes.filter((quote) => quote.category === selectedCategory);
+        const categoryQuotes = quotes.filter((quote) =>
+            quote.categories.includes(selectedCategory)
+        );
         currentQuote = categoryQuotes[Math.floor(Math.random() * categoryQuotes.length)];
     };
 
