@@ -1,10 +1,10 @@
 <script lang="ts">
-    import QuoteBox from '$lib/components/QuoteBox.svelte';
+    import type { PageData } from './$types';
     import type QuoteType from '$lib/types/QuoteType';
     import { flip } from 'svelte/animate';
     import { blur, slide } from 'svelte/transition';
-    import type { PageData } from './$types';
     import { favouritesStore } from '$lib/stores/favourites';
+    import QuoteBox from '$lib/components/QuoteBox.svelte';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);

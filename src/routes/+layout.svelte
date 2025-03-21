@@ -1,5 +1,5 @@
 <script lang="ts">
-    // your script goes here
+    import { base } from '$app/paths';
     import MaterialSymbolsHomeOutline from 'virtual:icons/material-symbols/home-outline';
     import MaterialSymbolsStarOutline from 'virtual:icons/material-symbols/star-outline';
 </script>
@@ -8,12 +8,12 @@
     <header>
         <ul>
             <li>
-                <a href="/">
+                <a href="{base}/">
                     <MaterialSymbolsHomeOutline width="48" height="48" alt="Home" />
                 </a>
             </li>
             <li>
-                <a href="favourites/">
+                <a href="{base}/favourites/">
                     <MaterialSymbolsStarOutline width="48" height="48" alt="Favourites" />
                 </a>
             </li>

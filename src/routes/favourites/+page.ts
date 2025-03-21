@@ -1,12 +1,12 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import type QuoteType from '$lib/types/QuoteType';
+import { base } from '$app/paths';
 
-export const prerender = true;
 export const ssr = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-    const results = await fetch('/quotes.json');
+    const results = await fetch(base + '/quotes.json');
     if (!results.ok) {
         error(results.status, {
             message: results.statusText

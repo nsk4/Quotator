@@ -1,8 +1,9 @@
 <script lang="ts">
+    import type QuoteType from '$lib/types/QuoteType';
+    import { base } from '$app/paths';
     import MaterialSymbolsStarOutline from 'virtual:icons/material-symbols/star-outline';
     import MaterialSymbolsStar from 'virtual:icons/material-symbols/star';
     import MaterialSymbolsShare from 'virtual:icons/material-symbols/share';
-    import type QuoteType from '$lib/types/QuoteType';
 
     let props = $props();
     let quote: QuoteType = $derived(props.quote);
@@ -13,7 +14,7 @@
         const shareData = {
             title: 'Quotator Quote',
             text: `Here is an inspiring quote by ${quote.author} for you: "${quote.text}"`,
-            url: '/' + quote.id
+            url: base + '/' + quote.id
         };
 
         if (navigator.share) {

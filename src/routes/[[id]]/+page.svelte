@@ -1,9 +1,9 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import type QuoteType from '$lib/types/QuoteType';
-    import QuoteBox from '$lib/components/QuoteBox.svelte';
     import { slide } from 'svelte/transition';
     import { favouritesStore } from '$lib/stores/favourites';
+    import QuoteBox from '$lib/components/QuoteBox.svelte';
 
     let { data }: { data: PageData } = $props();
     let quotes: QuoteType[] = $derived(data.quotes);
